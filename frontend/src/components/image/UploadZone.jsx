@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiUploadCloud, FiX, FiCheck } from 'react-icons/fi';
+import { UploadCloud, X, Check } from 'lucide-react';
 import { imageApi } from '../../api';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatBytes } from '../../utils/helpers';
@@ -64,15 +64,14 @@ export default function UploadZone({ folderId }) {
           animate={{ y: isDragActive ? -4 : 0 }}
           className="flex flex-col items-center gap-3"
         >
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-            style={{ background: 'var(--accent-glow)' }}>
-            <FiUploadCloud className="w-7 h-7" style={{ color: '#6366f1' }} />
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-indigo-500/10">
+            <UploadCloud className="w-7 h-7 text-indigo-400" />
           </div>
           <div>
-            <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
+            <p className="font-semibold text-sm text-zinc-200">
               {isDragActive ? 'Drop images here!' : 'Drag & drop images'}
             </p>
-            <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-xs mt-1 text-zinc-500">
               or click to browse · Max 20MB per file
             </p>
           </div>
@@ -87,19 +86,18 @@ export default function UploadZone({ folderId }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="rounded-xl p-3 space-y-2"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+            className="rounded-xl p-3 space-y-2 bg-white/[0.02] border border-white/5"
           >
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0 mr-3">
-                <p className="text-xs font-medium truncate" style={{ color: 'var(--text-primary)' }}>
+                <p className="text-[13px] font-medium truncate text-zinc-300">
                   {item.name}
                 </p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{formatBytes(item.size)}</p>
+                <p className="text-[12px] text-zinc-500">{formatBytes(item.size)}</p>
               </div>
               <span className="shrink-0">
-                {item.status === 'done' && <FiCheck className="w-4 h-4" style={{ color: '#10b981' }} />}
-                {item.status === 'error' && <FiX className="w-4 h-4" style={{ color: '#ef4444' }} />}
+                {item.status === 'done' && <Check className="w-4 h-4 text-emerald-400" />}
+                {item.status === 'error' && <X className="w-4 h-4 text-red-400" />}
                 {item.status === 'uploading' && (
                   <span className="text-xs font-mono" style={{ color: 'var(--accent-light)' }}>
                     {item.progress}%

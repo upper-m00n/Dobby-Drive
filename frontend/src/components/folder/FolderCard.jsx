@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FiFolder, FiMoreVertical, FiEdit2, FiTrash2, FiChevronRight } from 'react-icons/fi';
+import { Folder, MoreVertical, Edit2, Trash2, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { folderApi } from '../../api';
-import { formatBytes, formatDate } from '../../utils/helpers';
+import { formatBytes } from '../../utils/helpers';
 import toast from 'react-hot-toast';
 
 export default function FolderCard({ folder, currentFolderId }) {
@@ -45,60 +45,45 @@ export default function FolderCard({ folder, currentFolderId }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -2 }}
-      className="group relative rounded-xl p-4 cursor-pointer transition-all"
-      style={{
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border)',
-      }}
-      onMouseEnter={(e) => e.currentTarget.style.borderColor = `${folder.color}66`}
-      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+      whileHover={{ y: -4 }}
+      className="group relative rounded-[24px] p-6 cursor-pointer transition-all duration-300 bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10 hover:shadow-2xl hover:shadow-black/50"
       onClick={() => !menuOpen && !renaming && navigate(`/folder/${folder._id}`)}
     >
       {/* Top color strip */}
-      <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-xl"
+      <div className="absolute top-0 left-0 right-0 h-1 rounded-t-[24px] opacity-60 group-hover:opacity-100 transition-opacity"
         style={{ background: `linear-gradient(90deg, ${folder.color}, transparent)` }} />
 
       {/* Menu button */}
       <button
-        id={`folder-menu-${folder._id}`}
         onClick={(e) => { e.stopPropagation(); setMenuOpen((o) => !o); }}
-        className="absolute top-3 right-3 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-        style={{ background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
+        className="absolute top-4 right-4 p-2 rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-white/10 text-zinc-500 hover:text-zinc-300"
       >
-        <FiMoreVertical className="w-3.5 h-3.5" />
+        <MoreVertical className="w-[18px] h-[18px]" />
       </button>
 
       {/* Context menu */}
       <AnimatePresence>
         {menuOpen && (
           <>
-            <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+            <div className="fixed inset-0 z-10" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }} />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: -4 }}
+              initial={{ opacity: 0, scale: 0.95, y: -4 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="absolute top-10 right-3 z-20 rounded-xl overflow-hidden shadow-2xl"
-              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', minWidth: '140px' }}
+              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.1 } }}
+              className="absolute top-12 right-4 z-20 w-40 rounded-xl overflow-hidden shadow-2xl bg-[#18181b] border border-white/10 p-1.5"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={(e) => { e.stopPropagation(); setRenaming(true); setMenuOpen(false); }}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm transition-all"
-                style={{ color: 'var(--text-secondary)' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-hover)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[14px] font-medium text-zinc-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
               >
-                <FiEdit2 className="w-3.5 h-3.5" /> Rename
+                <Edit2 className="w-4 h-4" /> Rename
               </button>
               <button
                 onClick={handleDelete}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm transition-all"
-                style={{ color: '#ef4444' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[14px] font-medium text-red-400 hover:text-red-300 rounded-lg hover:bg-red-500/10 transition-colors"
               >
-                <FiTrash2 className="w-3.5 h-3.5" /> Delete
+                <Trash2 className="w-4 h-4" /> Delete
               </button>
             </motion.div>
           </>
@@ -106,9 +91,9 @@ export default function FolderCard({ folder, currentFolderId }) {
       </AnimatePresence>
 
       {/* Folder icon */}
-      <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
         style={{ background: `${folder.color}22` }}>
-        <FiFolder className="w-7 h-7" style={{ color: folder.color }} />
+        <Folder className="w-7 h-7" style={{ color: folder.color, fill: `${folder.color}44` }} />
       </div>
 
       {/* Name */}
@@ -119,23 +104,21 @@ export default function FolderCard({ folder, currentFolderId }) {
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             onBlur={() => setRenaming(false)}
-            className="w-full text-sm font-medium px-2 py-1 rounded-lg outline-none"
-            style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid #6366f1' }}
+            className="w-full text-[15px] font-semibold px-3 py-1.5 rounded-lg outline-none bg-black/40 text-white border border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
           />
         </form>
       ) : (
-        <p className="text-sm font-semibold truncate mb-1" style={{ color: 'var(--text-primary)' }}>
+        <p className="text-[16px] font-semibold truncate mb-1.5 text-zinc-100 tracking-tight">
           {folder.name}
         </p>
       )}
 
       {/* Meta */}
-      <div className="flex items-center justify-between mt-2">
-        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+        <span className="text-[13px] font-medium text-zinc-500">
           {formatBytes(folder.size || 0)}
         </span>
-        <FiChevronRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-60 transition-all"
-          style={{ color: 'var(--text-muted)' }} />
+        <ChevronRight className="w-[18px] h-[18px] text-zinc-600 opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1" />
       </div>
     </motion.div>
   );

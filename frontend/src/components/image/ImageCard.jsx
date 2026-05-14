@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FiTrash2, FiZoomIn, FiDownload } from 'react-icons/fi';
+import { Trash2, ZoomIn, Download } from 'lucide-react';
 import { imageApi } from '../../api';
 import { formatBytes, formatDate } from '../../utils/helpers';
 import toast from 'react-hot-toast';
@@ -15,38 +15,36 @@ function Lightbox({ image, onClose }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.9)' }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+          style={{ background: 'rgba(0,0,0,0.85)' }}
           onClick={onClose}
         >
           <motion.div
-            initial={{ scale: 0.85 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0.85 }}
-            className="relative max-w-4xl max-h-[90vh] w-full"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="relative max-w-5xl max-h-[90vh] w-full flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={image.url}
               alt={image.name}
-              className="w-full h-full object-contain rounded-2xl"
+              className="w-full h-full object-contain rounded-2xl shadow-2xl"
               style={{ maxHeight: '80vh' }}
             />
-            <div className="absolute bottom-0 left-0 right-0 p-4 rounded-b-2xl"
-              style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.8))' }}>
-              <p className="text-white font-medium text-sm">{image.name}</p>
-              <p className="text-gray-400 text-xs">{formatBytes(image.size)} · {formatDate(image.createdAt)}</p>
+            <div className="absolute bottom-0 left-0 right-0 p-6 rounded-b-2xl"
+              style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.9))' }}>
+              <p className="text-white font-semibold text-[15px]">{image.name}</p>
+              <p className="text-zinc-400 text-[13px] mt-1">{formatBytes(image.size)} · {formatDate(image.createdAt)}</p>
             </div>
             <button onClick={onClose}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-white"
-              style={{ background: 'rgba(0,0,0,0.5)' }}>
+              className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-white bg-black/50 hover:bg-black/70 transition-colors backdrop-blur-md">
               ✕
             </button>
             <a href={image.url} download={image.name} target="_blank" rel="noopener noreferrer"
-              className="absolute top-4 right-14 w-8 h-8 rounded-full flex items-center justify-center text-white"
-              style={{ background: 'rgba(0,0,0,0.5)' }}
+              className="absolute top-4 right-16 w-10 h-10 rounded-full flex items-center justify-center text-white bg-black/50 hover:bg-black/70 transition-colors backdrop-blur-md"
               onClick={(e) => e.stopPropagation()}>
-              <FiDownload className="w-4 h-4" />
+              <Download className="w-[18px] h-[18px]" />
             </a>
           </motion.div>
         </motion.div>
@@ -109,27 +107,21 @@ export default function ImageCard({ image, folderId }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 flex items-center justify-center gap-2"
+              className="absolute inset-0 flex items-center justify-center gap-3 backdrop-blur-[2px]"
               style={{ background: 'rgba(0,0,0,0.5)' }}
             >
               <button
                 onClick={(e) => { e.stopPropagation(); setLightbox(true); }}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-white transition-all"
-                style={{ background: 'rgba(255,255,255,0.15)' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-all bg-white/20 hover:bg-white/40 shadow-lg"
               >
-                <FiZoomIn className="w-4 h-4" />
+                <ZoomIn className="w-5 h-5" />
               </button>
               <button
                 onClick={handleDelete}
                 disabled={isPending}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-white transition-all"
-                style={{ background: 'rgba(239,68,68,0.7)' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.9)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.7)'}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-all bg-red-500/80 hover:bg-red-500 shadow-lg"
               >
-                <FiTrash2 className="w-4 h-4" />
+                <Trash2 className="w-5 h-5" />
               </button>
             </motion.div>
           )}

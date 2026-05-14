@@ -3,8 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FiFolder, FiChevronRight, FiChevronDown, FiPlus, FiCloud,
-  FiSun, FiMoon, FiLogOut, FiUser, FiSearch, FiHome
+  FiFolder, FiChevronRight, FiChevronDown, FiPlus,
+  FiSun, FiMoon, FiLogOut, FiHome
 } from 'react-icons/fi';
 import { folderApi } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -85,11 +85,11 @@ export default function Sidebar({ currentFolderId, onCreateFolder }) {
     <aside className="flex flex-col h-full" style={{ background: 'var(--bg-secondary)', borderRight: '1px solid var(--border)' }}>
       {/* Logo */}
       <div className="p-5 flex items-center gap-3" style={{ borderBottom: '1px solid var(--border)' }}>
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-xl"
           style={{ background: 'linear-gradient(135deg, #6366f1, #818cf8)' }}>
-          <FiCloud className="w-5 h-5 text-white" />
+          🐶
         </div>
-        <span className="font-bold text-lg gradient-text">CloudVault</span>
+        <span className="font-bold text-lg gradient-text">Dobby Vault</span>
       </div>
 
       {/* Nav */}

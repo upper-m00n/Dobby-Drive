@@ -10,7 +10,7 @@ export default function ProtectedRoute({ children }) {
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-2 border-t-transparent rounded-full spin"
             style={{ borderColor: '#6366f1', borderTopColor: 'transparent' }} />
-          <p style={{ color: 'var(--text-secondary)' }}>Loading CloudVault…</p>
+          <p style={{ color: 'var(--text-secondary)' }}>Loading Dobby Vault…</p>
         </div>
       </div>
     );

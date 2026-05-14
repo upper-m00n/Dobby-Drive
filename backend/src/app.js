@@ -1,9 +1,26 @@
-require('dotenv').config();
+// Load .env manually so it works regardless of CWD or dotenvx interference
+const path = require('path');
+const fs = require('fs');
+const envPath = path.resolve(__dirname, '../.env');
+if (fs.existsSync(envPath)) {
+  fs.readFileSync(envPath, 'utf8')
+    .split('\n')
+    .forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) return;
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx === -1) return;
+      const key = trimmed.slice(0, eqIdx).trim();
+      const val = trimmed.slice(eqIdx + 1).trim();
+      if (key && !(key in process.env)) process.env[key] = val;
+    });
+} else {
+  console.warn('⚠️  .env file not found at', envPath);
+}
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const folderRoutes = require('./routes/folders');
@@ -13,8 +30,23 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 
 // ─── Middleware ───────────────────────────────────────────────────
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://localhost:3000'
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());
