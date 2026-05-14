@@ -32,6 +32,7 @@ const app = express();
 // ─── Middleware ───────────────────────────────────────────────────
 const allowedOrigins = [
   process.env.CLIENT_URL,
+  'https://dobby-drive-gilt.vercel.app',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
