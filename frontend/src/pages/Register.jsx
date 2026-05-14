@@ -52,7 +52,7 @@ export default function Register() {
       footerLink="/login"
       footerLinkText="Sign in"
     >
-      <form onSubmit={handleSubmit} className="w-full">
+      <form onSubmit={handleSubmit} className="w-full space-y-6">
         <InputField
           label="Full Name"
           id="name"
@@ -75,7 +75,7 @@ export default function Register() {
           onChange={handleChange}
         />
         
-        <div className="mb-5">
+        <div>
           <InputField
             label="Password"
             id="password"
@@ -87,7 +87,7 @@ export default function Register() {
             onChange={handleChange}
           />
           {form.password && (
-            <div className="flex items-center gap-2 pt-1 px-1">
+            <div className="flex items-center gap-2 pt-3 px-1">
               <div className="flex gap-1.5 flex-1">
                 {[1, 2, 3].map((i) => (
                   <div

@@ -38,7 +38,7 @@ export default function Login() {
       footerLink="/register"
       footerLinkText="Create one free"
     >
-      <form onSubmit={handleSubmit} className="w-full">
+      <form onSubmit={handleSubmit} className="w-full space-y-6">
         <InputField
           label="Email address"
           id="email"
