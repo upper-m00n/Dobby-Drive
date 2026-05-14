@@ -52,28 +52,30 @@ export default function Register() {
       footerLink="/login"
       footerLinkText="Sign in"
     >
-      <form onSubmit={handleSubmit} className="w-full space-y-6">
-        <InputField
-          label="Full Name"
-          id="name"
-          name="name"
-          icon={User}
-          placeholder="John Doe"
-          autoComplete="name"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <InputField
-          label="Email address"
-          id="email"
-          name="email"
-          type="email"
-          icon={Mail}
-          placeholder="you@example.com"
-          autoComplete="email"
-          value={form.email}
-          onChange={handleChange}
-        />
+      <form onSubmit={handleSubmit} className="w-full space-y-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <InputField
+            label="Full Name"
+            id="name"
+            name="name"
+            icon={User}
+            placeholder="John Doe"
+            autoComplete="name"
+            value={form.name}
+            onChange={handleChange}
+          />
+          <InputField
+            label="Email address"
+            id="email"
+            name="email"
+            type="email"
+            icon={Mail}
+            placeholder="you@example.com"
+            autoComplete="email"
+            value={form.email}
+            onChange={handleChange}
+          />
+        </div>
         
         <div>
           <InputField
@@ -87,7 +89,7 @@ export default function Register() {
             onChange={handleChange}
           />
           {form.password && (
-            <div className="flex items-center gap-2 pt-3 px-1">
+            <div className="flex items-center gap-2 pt-2 px-1">
               <div className="flex gap-1.5 flex-1">
                 {[1, 2, 3].map((i) => (
                   <div
