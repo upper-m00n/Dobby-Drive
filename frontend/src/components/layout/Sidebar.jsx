@@ -1,17 +1,15 @@
-import { useState, useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FiFolder, FiChevronRight, FiChevronDown, FiPlus,
-  FiSun, FiMoon, FiLogOut, FiHome
-} from 'react-icons/fi';
+  Folder, ChevronRight, Plus,
+  Sun, Moon, LogOut, Home, Settings
+} from 'lucide-react';
 import { folderApi } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import toast from 'react-hot-toast';
 
-// ─── Recursive tree node ─────────────────────────────────────────
 function TreeNode({ folder, allFolders, depth = 0, currentId, onNavigate }) {
   const [open, setOpen] = useState(false);
   const children = allFolders.filter((f) => f.parentFolderId === folder._id);
@@ -19,28 +17,38 @@ function TreeNode({ folder, allFolders, depth = 0, currentId, onNavigate }) {
 
   return (
     <div>
-      <button
+      <motion.button
         onClick={() => { onNavigate(folder._id); setOpen((o) => !o); }}
-        className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all group"
-        style={{
-          paddingLeft: `${12 + depth * 14}px`,
-          background: isActive ? 'var(--accent-glow)' : 'transparent',
-          color: isActive ? 'var(--accent-light)' : 'var(--text-secondary)',
-          border: isActive ? '1px solid var(--border-accent)' : '1px solid transparent',
-        }}
-        onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = 'var(--bg-hover)'; }}
-        onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+        className={`w-full flex items-center gap-2.5 py-2 pr-3 rounded-lg text-sm font-medium transition-all group relative overflow-hidden ${
+          isActive
+            ? 'text-indigo-400 bg-white/[0.04]'
+            : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02]'
+        }`}
+        style={{ paddingLeft: `${16 + depth * 16}px` }}
       >
-        {children.length > 0 ? (
-          open
-            ? <FiChevronDown className="w-3 h-3 shrink-0 opacity-60" />
-            : <FiChevronRight className="w-3 h-3 shrink-0 opacity-60" />
-        ) : (
-          <span className="w-3 h-3 shrink-0" />
+        {/* Active indicator */}
+        {isActive && (
+          <motion.div
+            className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-indigo-500"
+            layoutId="sidebar-active"
+          />
         )}
-        <FiFolder className="w-4 h-4 shrink-0" style={{ color: folder.color || '#6366f1' }} />
-        <span className="truncate flex-1 text-left">{folder.name}</span>
-      </button>
+
+        {children.length > 0 ? (
+          <motion.div animate={{ rotate: open ? 90 : 0 }} transition={{ duration: 0.2 }}>
+            <ChevronRight className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-indigo-400' : 'text-zinc-500 group-hover:text-zinc-300'}`} />
+          </motion.div>
+        ) : (
+          <span className="w-3.5 h-3.5 shrink-0" />
+        )}
+
+        <Folder
+          className="w-4 h-4 shrink-0"
+          style={{ color: folder.color || '#8b5cf6' }}
+          fill={isActive ? `${folder.color || '#8b5cf6'}40` : 'transparent'}
+        />
+        <span className="truncate flex-1 text-left text-[13px]">{folder.name}</span>
+      </motion.button>
 
       <AnimatePresence>
         {open && children.length > 0 && (
@@ -52,8 +60,14 @@ function TreeNode({ folder, allFolders, depth = 0, currentId, onNavigate }) {
             className="overflow-hidden"
           >
             {children.map((child) => (
-              <TreeNode key={child._id} folder={child} allFolders={allFolders}
-                depth={depth + 1} currentId={currentId} onNavigate={onNavigate} />
+              <TreeNode
+                key={child._id}
+                folder={child}
+                allFolders={allFolders}
+                depth={depth + 1}
+                currentId={currentId}
+                onNavigate={onNavigate}
+              />
             ))}
           </motion.div>
         )}
@@ -62,12 +76,10 @@ function TreeNode({ folder, allFolders, depth = 0, currentId, onNavigate }) {
   );
 }
 
-// ─── Sidebar ──────────────────────────────────────────────────────
 export default function Sidebar({ currentFolderId, onCreateFolder }) {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  const qc = useQueryClient();
 
   const { data } = useQuery({
     queryKey: ['folders-all'],
@@ -78,92 +90,78 @@ export default function Sidebar({ currentFolderId, onCreateFolder }) {
   const allFolders = data || [];
   const rootFolders = allFolders.filter((f) => !f.parentFolderId);
 
-  const handleNavigate = (id) => navigate(`/folder/${id}`);
-  const handleHome = () => navigate('/dashboard');
-
   return (
-    <aside className="flex flex-col h-full" style={{ background: 'var(--bg-secondary)', borderRight: '1px solid var(--border)' }}>
-      {/* Logo */}
-      <div className="p-5 flex items-center gap-3" style={{ borderBottom: '1px solid var(--border)' }}>
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-xl"
-          style={{ background: 'linear-gradient(135deg, #6366f1, #818cf8)' }}>
-          🐶
+    <aside className="flex flex-col h-full bg-transparent">
+      {/* Header Logo */}
+      <motion.div 
+        className="px-6 py-6 flex items-center gap-3 shrink-0"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="w-9 h-9 rounded-[10px] flex items-center justify-center text-[18px] flex-shrink-0 shadow-lg shadow-indigo-500/20 bg-gradient-to-br from-indigo-500 to-violet-600 border border-indigo-400/30">
+          ✨
         </div>
-        <span className="font-bold text-lg gradient-text">Dobby Vault</span>
-      </div>
+        <div className="flex-1 min-w-0">
+          <h1 className="font-bold text-[16px] text-white tracking-tight">Dobby Vault</h1>
+        </div>
+      </motion.div>
 
-      {/* Nav */}
-      <div className="p-3 space-y-1" style={{ borderBottom: '1px solid var(--border)' }}>
-        <button
-          onClick={handleHome}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all"
-          style={{
-            background: !currentFolderId ? 'var(--accent-glow)' : 'transparent',
-            color: !currentFolderId ? 'var(--accent-light)' : 'var(--text-secondary)',
-            border: !currentFolderId ? '1px solid var(--border-accent)' : '1px solid transparent',
-          }}
-          onMouseEnter={(e) => { if (currentFolderId) e.currentTarget.style.background = 'var(--bg-hover)'; }}
-          onMouseLeave={(e) => { if (currentFolderId) e.currentTarget.style.background = 'transparent'; }}
+      {/* Primary Navigation */}
+      <div className="px-3 py-2 space-y-1 shrink-0">
+        <motion.button
+          onClick={() => navigate('/dashboard')}
+          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all relative ${
+            !currentFolderId
+              ? 'text-indigo-400 bg-white/[0.04]'
+              : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.02]'
+          }`}
         >
-          <FiHome className="w-4 h-4 shrink-0" />
-          My Drive
-        </button>
-
-        <button
-          onClick={onCreateFolder}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all"
-          style={{ color: 'var(--text-secondary)', border: '1px solid transparent' }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-        >
-          <FiPlus className="w-4 h-4 shrink-0" />
-          New Folder
-        </button>
+          {!currentFolderId && (
+            <motion.div
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-indigo-500"
+              layoutId="sidebar-active"
+            />
+          )}
+          <Home className="w-[18px] h-[18px] shrink-0" />
+          <span>My Drive</span>
+        </motion.button>
       </div>
 
       {/* Folder tree */}
-      <div className="flex-1 overflow-y-auto p-3">
-        <p className="text-xs font-semibold uppercase tracking-wider mb-2 px-2"
-          style={{ color: 'var(--text-muted)' }}>Folders</p>
+      <div className="flex-1 overflow-y-auto mt-4 px-3 hide-scrollbar">
+        <div className="flex items-center justify-between px-3 mb-2">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Folders</p>
+          <button onClick={onCreateFolder} className="p-1 rounded-md text-zinc-500 hover:text-white hover:bg-white/10 transition-all">
+            <Plus className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        
         {rootFolders.length === 0 ? (
-          <p className="text-xs px-3 py-2" style={{ color: 'var(--text-muted)' }}>No folders yet</p>
+          <p className="text-[13px] px-3 py-2 text-zinc-600 font-medium">No folders yet</p>
         ) : (
-          rootFolders.map((f) => (
-            <TreeNode key={f._id} folder={f} allFolders={allFolders}
-              currentId={currentFolderId} onNavigate={handleNavigate} />
-          ))
+          <div className="space-y-0.5">
+            {rootFolders.map((f) => (
+              <TreeNode key={f._id} folder={f} allFolders={allFolders} currentId={currentFolderId} onNavigate={(id) => navigate(`/folder/${id}`)} />
+            ))}
+          </div>
         )}
       </div>
 
-      {/* User + controls */}
-      <div className="p-4 space-y-2" style={{ borderTop: '1px solid var(--border)' }}>
-        <button onClick={toggleTheme}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all"
-          style={{ color: 'var(--text-secondary)' }}
-          onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-hover)'}
-          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-        >
-          {theme === 'dark' ? <FiSun className="w-4 h-4" /> : <FiMoon className="w-4 h-4" />}
-          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-        </button>
-
-        <div className="flex items-center gap-3 px-3 py-2 rounded-xl"
-          style={{ background: 'var(--bg-hover)' }}>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-            style={{ background: 'linear-gradient(135deg, #6366f1, #818cf8)' }}>
+      {/* User profile & controls */}
+      <div className="p-4 mt-auto shrink-0 border-t border-white/5">
+        <div className="flex items-center gap-3 p-3 rounded-[14px] bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors group cursor-pointer">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[13px] font-bold shrink-0 shadow-inner"
+            style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
             {user?.name?.[0]?.toUpperCase() || 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{user?.name}</p>
-            <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{user?.email}</p>
+            <p className="text-[14px] font-semibold truncate text-zinc-100 tracking-tight leading-tight">{user?.name}</p>
+            <p className="text-[11px] truncate text-zinc-500">{user?.email}</p>
           </div>
-          <button onClick={logout} title="Logout"
-            className="p-1 rounded transition-all"
-            style={{ color: 'var(--text-muted)' }}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#ef4444'}
-            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+          <button onClick={(e) => { e.stopPropagation(); logout(); }} title="Logout"
+            className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-colors shrink-0 opacity-0 group-hover:opacity-100"
           >
-            <FiLogOut className="w-4 h-4" />
+            <LogOut className="w-[16px] h-[16px]" />
           </button>
         </div>
       </div>

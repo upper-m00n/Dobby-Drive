@@ -1,20 +1,20 @@
 export function FolderSkeleton() {
   return (
-    <div className="rounded-xl p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-      <div className="skeleton w-12 h-12 rounded-xl mb-3" />
-      <div className="skeleton h-3.5 w-3/4 mb-2 rounded" />
-      <div className="skeleton h-3 w-1/2 rounded" />
+    <div className="rounded-[24px] p-6 bg-white/[0.02] border border-white/5 flex flex-col">
+      <div className="w-14 h-14 rounded-2xl mb-5 bg-white/5 animate-pulse" />
+      <div className="h-4 w-3/4 mb-2.5 rounded bg-white/5 animate-pulse" />
+      <div className="h-3.5 w-1/2 rounded bg-white/5 animate-pulse mt-auto" />
     </div>
   );
 }
 
 export function ImageSkeleton() {
   return (
-    <div className="rounded-xl overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-      <div className="skeleton aspect-square" />
-      <div className="p-3">
-        <div className="skeleton h-3 w-3/4 mb-1 rounded" />
-        <div className="skeleton h-3 w-1/2 rounded" />
+    <div className="rounded-[20px] overflow-hidden bg-white/[0.02] border border-white/5 flex flex-col">
+      <div className="aspect-square bg-white/5 animate-pulse" />
+      <div className="p-4">
+        <div className="h-3 w-3/4 mb-2 rounded bg-white/5 animate-pulse" />
+        <div className="h-3 w-1/2 rounded bg-white/5 animate-pulse" />
       </div>
     </div>
   );

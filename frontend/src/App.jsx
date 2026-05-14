@@ -42,14 +42,16 @@ export default function App() {
             position="bottom-right"
             toastOptions={{
               style: {
-                background: 'var(--bg-secondary)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border)',
-                borderRadius: '12px',
+                background: '#09090b',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '16px',
                 fontSize: '14px',
+                padding: '12px 16px',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)'
               },
-              success: { iconTheme: { primary: '#10b981', secondary: 'white' } },
-              error: { iconTheme: { primary: '#ef4444', secondary: 'white' } },
+              success: { iconTheme: { primary: '#6366f1', secondary: '#fff' } },
+              error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
             }}
           />
         </AuthProvider>

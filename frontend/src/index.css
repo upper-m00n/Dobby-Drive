@@ -1,120 +1,107 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* ────────────────────────────────────────────────────────────── */
+/* MODERN SASS DESIGN SYSTEM                                     */
+/* ────────────────────────────────────────────────────────────── */
 
-/* ─── CSS Variables ──────────────────────────────────────────── */
-:root {
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #111118;
-  --bg-card: #16161f;
-  --bg-hover: #1e1e2a;
-  --border: rgba(255,255,255,0.08);
-  --border-accent: rgba(99,102,241,0.3);
-  --text-primary: #f0f0fa;
-  --text-secondary: #8b8ba7;
-  --text-muted: #555570;
-  --accent: #6366f1;
-  --accent-light: #818cf8;
-  --accent-glow: rgba(99,102,241,0.2);
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-[data-theme="light"] {
-  --bg-primary: #f8f8fc;
-  --bg-secondary: #ffffff;
-  --bg-card: #ffffff;
-  --bg-hover: #f3f3fa;
-  --border: rgba(0,0,0,0.08);
-  --border-accent: rgba(99,102,241,0.3);
-  --text-primary: #1a1a2e;
-  --text-secondary: #4a4a6a;
-  --text-muted: #8888aa;
-  --accent-glow: rgba(99,102,241,0.1);
+html {
+  scroll-behavior: smooth;
 }
 
-/* ─── Base ───────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+}
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #09090b;
+  color: #e5e5e5;
+  font-size: 14px;
   line-height: 1.6;
   overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
 }
 
-#root { min-height: 100vh; }
-
-/* ─── Scrollbar ───────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.6); }
-
-/* ─── Glass Card ──────────────────────────────────────────────── */
-.glass {
-  background: rgba(22, 22, 31, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border);
+#root {
+  min-height: 100vh;
 }
 
-[data-theme="light"] .glass {
-  background: rgba(255,255,255,0.8);
+/* ────────────────────────────────────────────────────────────── */
+/* SCROLLBAR STYLING                                              */
+/* ────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-/* ─── Gradient text ───────────────────────────────────────────── */
-.gradient-text {
-  background: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #a5b4fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-/* ─── Animations ──────────────────────────────────────────────── */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
-  50%       { box-shadow: 0 0 20px 8px var(--accent-glow); }
-}
-@keyframes shimmer {
-  from { background-position: -200% 0; }
-  to   { background-position: 200% 0; }
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
+  transition: background 0.3s ease;
 }
 
-.fade-in { animation: fadeIn 0.3s ease both; }
-.spin { animation: spin 1s linear infinite; }
-
-/* ─── Skeleton ────────────────────────────────────────────────── */
-.skeleton {
-  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-hover) 50%, var(--bg-card) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 8px;
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
 }
 
-/* ─── Dropzone ────────────────────────────────────────────────── */
-.dropzone-active {
-  border-color: var(--accent) !important;
-  background: var(--accent-glow) !important;
+/* ────────────────────────────────────────────────────────────── */
+/* SELECTION STYLING                                              */
+/* ────────────────────────────────────────────────────────────── */
+
+::selection {
+  background: rgba(139, 92, 246, 0.3);
+  color: #fff;
 }
 
-/* ─── Upload progress ────────────────────────────────────────── */
-.progress-bar {
-  height: 4px;
-  border-radius: 99px;
-  background: linear-gradient(90deg, #6366f1, #818cf8);
-  transition: width 0.3s ease;
+/* ────────────────────────────────────────────────────────────── */
+/* FORM STYLING                                                   */
+/* ────────────────────────────────────────────────────────────── */
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+input[type='search']::-webkit-search-cancel-button {
+  display: none;
+}
+
+/* ────────────────────────────────────────────────────────────── */
+/* UTILITY CLASSES                                                */
+/* ────────────────────────────────────────────────────────────── */
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Base custom classes to match what's used in the code */
+.bg-dark-950 { background-color: #09090b; }
+.bg-dark-900 { background-color: #111118; }
+.bg-dark-800 { background-color: #1a1a24; }
+
+.shadow-inner {
+  box-shadow: inset 0 2px 4px 0 rgba(255, 255, 255, 0.03);
 }

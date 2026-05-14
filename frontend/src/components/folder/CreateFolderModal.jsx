@@ -1,10 +1,26 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiFolder } from 'react-icons/fi';
+import { X, Folder } from 'lucide-react';
 import { folderApi } from '../../api';
 import { FOLDER_COLORS } from '../../utils/helpers';
 import toast from 'react-hot-toast';
+
+const backdropVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.3 } },
+};
+
+const modalVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 350, damping: 25 },
+  },
+  exit: { opacity: 0, scale: 0.95, y: 10, transition: { duration: 0.2 } },
+};
 
 export default function CreateFolderModal({ isOpen, onClose, parentFolderId }) {
   const [name, setName] = useState('');
@@ -32,104 +48,127 @@ export default function CreateFolderModal({ isOpen, onClose, parentFolderId }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop */}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.7)' }}
+            variants={backdropVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
             onClick={onClose}
+            className="absolute inset-0 bg-dark-950/80 backdrop-blur-md"
           />
 
-          {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 16 }}
-            transition={{ duration: 0.2 }}
-            className="relative w-full max-w-sm glass rounded-2xl p-6 z-10"
-            style={{ border: '1px solid var(--border)' }}
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="relative w-full max-w-[460px] bg-dark-900 border border-white/10 rounded-[28px] p-8 sm:p-10 shadow-2xl shadow-black/80 overflow-hidden"
           >
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
+            {/* Background subtle glow */}
+            <div 
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-32 rounded-full blur-[80px] opacity-20 pointer-events-none transition-colors duration-500"
+              style={{ background: color }}
+            />
+
+            {/* Close button */}
+            <motion.button
+              onClick={onClose}
+              className="absolute top-6 right-6 p-2 rounded-xl text-zinc-500 hover:text-white hover:bg-white/10 transition-colors z-10"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <X className="w-5 h-5" />
+            </motion.button>
+
+            {/* Header */}
+            <div className="mb-8 relative z-10">
+              <h2 className="text-[22px] font-bold text-white tracking-tight mb-2">
                 New Folder
               </h2>
-              <button onClick={onClose} className="p-1.5 rounded-lg transition-all"
-                style={{ color: 'var(--text-muted)' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-hover)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                <FiX className="w-4 h-4" />
-              </button>
+              <p className="text-[14px] text-zinc-400">
+                Organize your files with custom colors
+              </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Preview */}
-              <div className="flex items-center justify-center py-4">
-                <div className="w-20 h-20 rounded-2xl flex items-center justify-center"
-                  style={{ background: `${color}22`, border: `2px solid ${color}44` }}>
-                  <FiFolder className="w-10 h-10" style={{ color }} />
+            <form onSubmit={handleSubmit} className="space-y-7 relative z-10">
+              {/* Folder preview & input group */}
+              <div className="space-y-5">
+                <div className="flex justify-center mb-6">
+                  <motion.div
+                    className="w-[88px] h-[88px] rounded-[24px] flex items-center justify-center relative shadow-inner"
+                    style={{
+                      background: `linear-gradient(135deg, ${color}22, ${color}05)`,
+                      border: `1px solid ${color}40`,
+                    }}
+                    animate={{ scale: [1, 1.02, 1] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <Folder
+                      className="w-10 h-10"
+                      style={{ color, fill: `${color}40` }}
+                    />
+                    <div 
+                      className="absolute inset-0 rounded-[24px] blur-xl opacity-20"
+                      style={{ background: color }}
+                    />
+                  </motion.div>
+                </div>
+
+                <div>
+                  <label className="block text-[13px] font-medium text-zinc-300 mb-2">Folder Name</label>
+                  <input
+                    autoFocus
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Project Assets"
+                    className="w-full h-[46px] px-4 rounded-[14px] text-[15px] font-medium outline-none transition-all bg-dark-950 border border-white/10 text-white placeholder:text-zinc-600 focus:bg-white/[0.02] focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 shadow-inner"
+                  />
                 </div>
               </div>
 
-              {/* Name */}
+              {/* Color selector */}
               <div>
-                <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                  Folder Name
-                </label>
-                <input
-                  id="folder-name"
-                  autoFocus
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. My Projects"
-                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none transition-all"
-                  style={{
-                    background: 'var(--bg-hover)',
-                    border: '1px solid var(--border)',
-                    color: 'var(--text-primary)',
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#6366f1'}
-                  onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
-                />
-              </div>
-
-              {/* Color */}
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                  Color
-                </label>
-                <div className="flex gap-2 flex-wrap">
+                <label className="block text-[13px] font-medium text-zinc-300 mb-3">Theme Color</label>
+                <div className="flex flex-wrap gap-3">
                   {FOLDER_COLORS.map((c) => (
-                    <button
+                    <motion.button
                       key={c}
                       type="button"
                       onClick={() => setColor(c)}
-                      className="w-7 h-7 rounded-full transition-all"
-                      style={{
-                        background: c,
-                        transform: color === c ? 'scale(1.25)' : 'scale(1)',
-                        boxShadow: color === c ? `0 0 0 2px var(--bg-card), 0 0 0 4px ${c}` : 'none',
+                      className="w-9 h-9 rounded-full transition-all flex items-center justify-center"
+                      style={{ background: c }}
+                      animate={{
+                        scale: color === c ? 1.15 : 1,
+                        boxShadow: color === c ? `0 0 0 2px #111118, 0 0 0 4px ${c}` : '0 0 0 0px transparent',
                       }}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
                     />
                   ))}
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-all"
-                  style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'var(--border)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'var(--bg-hover)'}>
+              {/* Action buttons */}
+              <div className="flex gap-3 pt-6 border-t border-white/5">
+                <motion.button
+                  type="button"
+                  onClick={onClose}
+                  className="flex-1 h-[46px] rounded-[14px] bg-white/[0.03] hover:bg-white/[0.08] text-white font-medium text-[14px] transition-colors border border-white/10"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
                   Cancel
-                </button>
-                <button type="submit" disabled={isPending}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
-                  style={{
-                    background: isPending ? 'var(--text-muted)' : 'linear-gradient(135deg, #6366f1, #818cf8)',
-                    cursor: isPending ? 'not-allowed' : 'pointer',
-                  }}>
-                  {isPending ? 'Creating…' : 'Create Folder'}
-                </button>
+                </motion.button>
+                <motion.button
+                  type="submit"
+                  disabled={isPending || !name.trim()}
+                  className="flex-1 h-[46px] rounded-[14px] bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-semibold text-[14px] transition-colors shadow-lg shadow-indigo-500/25 disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-400/30"
+                  whileHover={!isPending && name.trim() ? { scale: 1.02, y: -1 } : {}}
+                  whileTap={!isPending && name.trim() ? { scale: 0.98 } : {}}
+                >
+                  {isPending ? 'Creating...' : 'Create Folder'}
+                </motion.button>
               </div>
             </form>
           </motion.div>

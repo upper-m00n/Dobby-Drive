@@ -1,25 +1,25 @@
-# ☁️ CloudVault — Full Stack Image & Folder Manager
+#  Dobby Vault — Full Stack Image & Folder Manager
 
 A **Google Drive-inspired** full-stack app built with **React + Node.js + MongoDB**.
 
 ---
 
-## 🚀 Features
+##  Features
 
-- 🔐 **JWT Authentication** — Register, login, logout with bcrypt password hashing
-- 📁 **Nested Folders** — Infinite folder hierarchy with expand/collapse tree
-- 🖼️ **Image Upload** — Drag & drop with per-file progress bars
-- 📊 **Recursive Size Calculation** — Total folder size including all nested content
-- 🌓 **Dark/Light Theme** — Persisted in localStorage
-- 🔍 **Search & Sort** — Filter folders and images by name, date, or size
-- 🎨 **Modern UI** — Glassmorphism, Framer Motion animations, skeleton loaders
-- 🗑️ **Recursive Delete** — Deletes all subfolders and images automatically
-- ✏️ **Inline Rename** — Click context menu to rename folders
-- 🔒 **Ownership Middleware** — Users only see their own data
+-  **JWT Authentication** — Register, login, logout with bcrypt password hashing
+-  **Nested Folders** — Infinite folder hierarchy with expand/collapse tree
+-  **Image Upload** — Drag & drop with per-file progress bars
+-  **Recursive Size Calculation** — Total folder size including all nested content
+-  **Dark/Light Theme** — Persisted in localStorage
+-  **Search & Sort** — Filter folders and images by name, date, or size
+-  **Modern UI** — Glassmorphism, Framer Motion animations, skeleton loaders
+-  **Recursive Delete** — Deletes all subfolders and images automatically
+-  **Inline Rename** — Click context menu to rename folders
+-  **Ownership Middleware** — Users only see their own data
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Layer | Tech |
 |---|---|
@@ -36,7 +36,7 @@ A **Google Drive-inspired** full-stack app built with **React + Node.js + MongoD
 
 ---
 
-## ⚙️ Setup
+##  Setup
 
 ### Prerequisites
 - Node.js 18+
@@ -82,7 +82,7 @@ npm run dev   # starts on port 5173
 
 ---
 
-## 🌐 API Reference
+##  API Reference
 
 ### Auth
 | Method | Endpoint | Description |
@@ -110,7 +110,7 @@ npm run dev   # starts on port 5173
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ├── backend/
@@ -131,14 +131,14 @@ npm run dev   # starts on port 5173
 
 ---
 
-## 🔐 Demo Credentials
+##  Demo Credentials
 
 After creating a user via `/register`, use those credentials.
 Or register: `demo@cloudvault.io` / `demo123`
 
 ---
 
-## 🚀 Deployment
+##  Deployment
 
 ### Frontend → Vercel
 ```bash
